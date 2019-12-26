@@ -1,3 +1,25 @@
+#############################
+#create list based on vulnerable code
+seq 2000 4000 > my_file.txt
+----
+#!/bin/bash
+#read.file.line.by.line.sh
+
+while read line
+do
+echo $line | md5sum | awk '{print $1}'
+done
+----
+
+more my_file.txt | ./read.line.by.line.sh | md5sum | cut -d '  ' -f 1
+
+
+in theory that would generate 2000 md5 hashes of 2000-4000 incrementally (adjust accordingly)
+
+from there its generating a python brute force script that follows a redirect, I wrote it a bit differently
+#############################
+
+
 <html>
    <head>
       <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
