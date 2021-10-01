@@ -1,0 +1,18 @@
+<html>
+<a href="https://reddit.com" onmouseover="this.href='https://reddit.com'" oncontextmenu="this.href='https://reddit.com'" onmousedown="this.href='https://example.com'">lets go to reddit!</a>
+</html>
+
+<!-- second page --!>
+
+<html>
+<head>
+<script>
+if (document.referrer !== "https://example.com") {
+    document.location.href = "http://www.reddit.com";
+}
+if (document.referrer == "https://example.com") {
+    document.location.href = "http://www.reddit.com";
+}
+</script>
+</head>
+</html>
