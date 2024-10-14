@@ -1,0 +1,21 @@
+<html>
+<header> test </header>
+<body>
+<script>
+function saveFile(name, type, data) {
+    if (data != null && navigator.msSaveBlob)
+        return navigator.msSaveBlob(new Blob([data], { type: type }), name);
+    var a = $("<a style='display: none;'/>");
+    var encodedStringAtoB = "dGVzdAo="
+    var decodedStringAtoB = atob(encodedStringAtoB);
+    const myBlob = new Blob([decodedStringAtoB], { type: 'text/html' });
+    const url = window.URL.createObjectURL(myBlob);
+    a.attr("href", url);
+    $("body").append(a);
+    a[0].click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+}
+</script>
+</body>
+</html>
